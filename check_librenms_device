@@ -32,7 +32,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # Exit codes
 declare -i STATE_OK=0
-declare -i STATE_WARNING=1
 declare -i STATE_CRITICAL=2
 declare -i STATE_UNKNOWN=3
 
@@ -44,10 +43,10 @@ DEVICE_ID=''
 
 # Parse arguments
 for ARG in "$@"; do
-  if [ "$ARG" = '-h' -o "$ARG" = '--help' ]; then
+  if [ "$ARG" = '-h' ] || [ "$ARG" = '--help' ]; then
     cat <<EOF
 LibreNMS device check
-usage: $(basename $0)
+usage: $(basename "$0")
 
 --api-key=<token>
   LibreNMS API token
@@ -92,10 +91,10 @@ LIBRENMS_STATUS="$(curl --silent --fail -H "X-Auth-Token: ${API_KEY}" "${API_URL
 if [ -z "$LIBRENMS_STATUS" ]; then
   ERR_CODE=$STATE_UNKNOWN
   ERR_MSG="${DEVICE_ID} not found!"
-elif [ $LIBRENMS_STATUS -eq 1 ]; then
+elif [ "$LIBRENMS_STATUS" -eq 1 ]; then
   ERR_CODE=$STATE_OK
   ERR_MSG="${DEVICE_ID} is up"
-elif [ $LIBRENMS_STATUS -eq 0 ]; then
+elif [ "$LIBRENMS_STATUS" -eq 0 ]; then
   ERR_CODE=$STATE_CRITICAL
   ERR_MSG="${DEVICE_ID} is down"
 else
